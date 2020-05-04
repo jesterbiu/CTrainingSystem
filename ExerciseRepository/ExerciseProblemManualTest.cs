@@ -20,24 +20,30 @@ namespace ExerciseRepository
             System.Console.ReadKey();
         }
 
-        static void PrintListOfList(List<string> Lists)
+        static void PrintListOfList(List<string> Lists, bool NewLine = false)
         {
             foreach (string s in Lists)
             {
                 System.Console.Write(s);
+                if (NewLine)
+                {
+                    System.Console.WriteLine();
+                }
             }
         }
 
         static void PrintExerciseProblem(ExerciseProblem problem)
         {
             System.Console.WriteLine();
-            System.Console.WriteLine("Name:\n{0}\n", problem.Name);
-            System.Console.WriteLine("Description:\n{0}\n", problem.Description);
-            System.Console.WriteLine("Counts: {0}\n", problem.TestInputs.Count);
+            System.Console.WriteLine("Name:\n{0}", problem.Name);
+            System.Console.WriteLine("Description:\n{0}", problem.Description);
+            System.Console.WriteLine("Counts:\n{0}\n", problem.TestInputs.Count);
             System.Console.WriteLine("TestInput:");
-            PrintListOfList(problem.TestInputs);
+            PrintListOfList(problem.TestInputs, true);
             System.Console.WriteLine("\nTestOutput:");
-            PrintListOfList(problem.TestOutputs);
+            PrintListOfList(problem.TestOutputs, true);
+
+            System.Console.ReadKey();
         }
 
         

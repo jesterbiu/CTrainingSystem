@@ -33,11 +33,10 @@ namespace CTrainingSystem
             {
                 if (Texts[Beg].Length > 0)
                 {
-                    strbuild.Append(Texts[Beg]);
-                    // compensate the loss of \n
-                    strbuild.Append('\n');                                
+                    strbuild.Append(Texts[Beg]);                                                  
                 }
-                 
+                // compensate the loss of \n
+                strbuild.Append('\n');
                 Beg++;
             }
             return strbuild.ToString();
@@ -126,7 +125,7 @@ namespace CTrainingSystem
         // return List<List<object>> if succeed; null if fail
         public static List<string> ReadTestData(string[] Texts, int Beg, int End)
         {            
-            if (Texts.Length <= 0)
+            if (Texts == null || Texts.Length <= 0)
             {
                 return null;
             }
