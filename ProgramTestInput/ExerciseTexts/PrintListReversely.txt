@@ -1,0 +1,32 @@
+Name:
+反向输出链表
+
+Description:
+输入一个以一个int作为数据的单向链表，从尾节点开始逆序输出这条链表的值。
+
+InputDescription:
+输入的第一行是输入的组数n，接下来的n行每一行都是一条链表各节点的值（从头节点开始）。
+
+OutputDescription:
+反向输出链表中的每个节点。
+
+InputExample:
+1
+1 2 3 4 5
+
+OutputExample:
+5 4 3 2 1
+
+ExampleExplaination:
+输入1个链表，其值分别为1、2、3、4、5；反向输出为 5 4 3 2 1.
+
+Counts:
+2
+
+TestInput:
+6 5 13 25 6 31
+5 6 16 51 23
+
+TestOutput:
+31 6 25 13 5 6
+23 51 16 6 5
