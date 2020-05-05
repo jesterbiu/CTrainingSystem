@@ -3,8 +3,12 @@
 
 int main()
 {
-    int a = 1, b = 2;    
-    printf("%d\n", adder(a, b));
+    // print 1~10
+    int i = 0, n = 10;
+    for (i = 0; i < n; i++)  
+    {
+        printf("%d\n", adder(i, 1));
+    }
     
     return 0;
 }

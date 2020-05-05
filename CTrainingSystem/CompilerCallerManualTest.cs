@@ -1,32 +1,47 @@
 ﻿using CTrainingSystem;
 using System.Diagnostics;
 namespace SystemTest
-{
-    
-
-    public class ExeRunnerTest
+{   
+    public class CompilerCallerManualTest
     {
         static readonly string ConfigFilePath =
-           "C:\\Users\\HASEE\\source\\repos\\ACM Training System\\Config.txt";
+           @"..\..\..\ProgramTestInput\Configs\CompilerPath.txt";
 
         public static void Main(string[] args)
         {
-            /*
+            WriteConfig();
+            CompilerTest1();
+        }
+
+        static void WriteConfig()
+        {
             // WriteConfig()
             string CompilerPath = @"C:\MinGW\bin\gcc.exe";
             System.IO.File.WriteAllText(ConfigFilePath, CompilerPath);
+        }
 
-            string StartupArgs =
-                "\"C:\\Users\\HASEE\\source\\repos\\ACM Training System\\GCCTEST\\add.h\" " +
-                "\"C:\\Users\\HASEE\\source\\repos\\ACM Training System\\GCCTEST\\mul.c\" -o E:\\gkdqiunile.exe";
+        static void CompilerTest1()
+        {          
+            // arrange
+            string SourceFiles =
+                @"..\..\..\ProgramTestInput\ExerciseCommits\add.h"
+                + " "
+                + @"..\..\..\ProgramTestInput\ExerciseCommits\mul.c";
 
             CompilerCaller cc = new CompilerCaller(ConfigFilePath);
-            cc.CallCompiler("introsortmyass");
-            */
-            //string str = System.IO.File.ReadAllText(@"..\..\..\..\ExerciseProblem\ProblemsText\untitled.txt");
-            
+            cc.CallCompiler("mul", SourceFiles);
 
-            //string s = 
+            // act
+            string[] Output = 
+                ExternExeRunner.Run(@"..\..\..\ProgramTestOutput\mul.exe", null, null);
+            
+            // assert
+            foreach (string op in Output)
+            {
+                System.Console.WriteLine(op);
+            }
+
+            System.Console.ReadKey();
         }
     }
 }

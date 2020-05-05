@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using CTrainingSystem;
 
-namespace ExerciseRepository
+namespace SystemTest
 {
     class ExerciseProblemManualTest
     {
         public static void Main(string[] args)
+        {
+            ExerciseProblemTest1();
+        }
+
+        static void ExerciseProblemTest1()
         {
             // arrange
             //测试前把这个地址改为实际的问题文档的地址
