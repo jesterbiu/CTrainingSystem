@@ -1,8 +1,11 @@
 ﻿//serialization
 namespace CTrainingSystem
 {
+    using System;
     using System.Collections.Generic;
-    
+    using System.Security.Cryptography;
+    using System.Xml.Schema;
+
     // contain methods to properly read exercise problems from text files
     public class ReadTextProblem
     {             
@@ -60,6 +63,7 @@ namespace CTrainingSystem
             return str;
         }
 
+        
         // convert a string, which seperates a sequence of numerics by space, 
         // to a list of numerics whose types could be int or double.
         // return null if fail
@@ -107,6 +111,7 @@ namespace CTrainingSystem
             }
             return Results;
         }
+        
 
         // read the counts from designated position: Texts[Index]    
         public static int ReadCounts(string[] Texts, int Index)
@@ -143,9 +148,11 @@ namespace CTrainingSystem
             return TestDatas;
         }
 
+        
+
     }
 
-    public class ExerciseProblem
+    public class ExerciseProblem : ICloneable
     {
         static readonly string NameIdentifier = "name:";
         static readonly string DescriptionIdentifier = "description:";
@@ -207,18 +214,25 @@ namespace CTrainingSystem
             return problem;
         }
 
+        // clone
+        public object Clone()
+        {
+            return new ExerciseProblem(this.Name, this.Description, 
+                this.TestInputs, this.TestOutputs);
+        }       
+
         // ctor
         public ExerciseProblem(string pName, string pDescription,
             List<string> pTestInputs, List<string> pTestOutputs)
         {
             try
             {
-                Name_ = pName;
-                Description_ = pDescription;
+                Name = Utils.DeepCopyString(pName);
+                Description = Utils.DeepCopyString(pDescription);
 
                 // note: cannot deep copy source objects if they are of reference types
-                TestInputs_ = pTestInputs;//const char* str = "..."; -> string str = "...";
-                TestOutputs_ = pTestOutputs;
+                TestInputs = Utils.CopyStringList(pTestInputs);//const char* str = "..."; -> string str = "...";
+                TestOutputs = Utils.CopyStringList(pTestOutputs);                
             }
             catch (System.Exception expt)
             {
@@ -229,27 +243,65 @@ namespace CTrainingSystem
 
 
         // fields
+        /*
         private readonly string Name_;
         private readonly string Description_;
         private readonly List<string> TestInputs_;
         private readonly List<string> TestOutputs_;
+        */
 
-        // accessor
+        // properties and backing fields
+        private string Name_ = "";
+        private string Description_ = "";
+        private List<string> TestInputs_ = new List<string>();
+        private List<string> TestOutputs_ = new List<string>();
+
         public string Name
         {
-            get => Name_;
+            get 
+            {
+                return Utils.DeepCopyString(Name_); 
+            }
+            private set 
+            { 
+                Name_ = value; 
+            }
         }
+        
         public string Description
         {
-            get => Description_;
+            get
+            {
+                return Utils.DeepCopyString(Description_);
+            }
+            private set
+            {
+                Description_ = value;
+            }
         }
+       
         public List<string> TestInputs
         {
-            get => TestInputs_;
+            get
+            {
+                return Utils.CopyStringList(TestInputs_);
+            }
+            private set
+            {
+                TestInputs_ = value;
+            }
         }
+        
         public List<string> TestOutputs
         {
-            get => TestOutputs_;
+            get
+            {
+                return Utils.CopyStringList(TestOutputs_);
+            }
+            private set
+            {
+                TestOutputs_ = value;
+            }
         }
 
     }

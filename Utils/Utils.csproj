@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF362D94-2B86-49B1-A128-C02E8420DFA9}</ProjectGuid>
+    <ProjectGuid>{3B95394F-3DC5-4C20-9058-2A1749BD8F54}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CTrainingSystem</RootNamespace>
-    <AssemblyName>CTrainingSystem</AssemblyName>
+    <RootNamespace>Utils</RootNamespace>
+    <AssemblyName>Utils</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,19 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompilerCaller.cs" />
-    <Compile Include="CompilerCallerManualTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ExternExeRunner\ExternExeRunner.csproj">
-      <Project>{dc6cbd55-b412-456e-b846-61868139db28}</Project>
-      <Name>ExternExeRunner</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

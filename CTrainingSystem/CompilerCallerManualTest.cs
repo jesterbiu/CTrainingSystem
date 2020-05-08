@@ -7,11 +7,13 @@ namespace SystemTest
         static readonly string ConfigFilePath =
            @"..\..\..\ProgramTestInput\Configs\CompilerPath.txt";
 
+        /*
         public static void Main(string[] args)
         {
             WriteConfig();
             CompilerTest1();
         }
+        */
 
         static void WriteConfig()
         {
