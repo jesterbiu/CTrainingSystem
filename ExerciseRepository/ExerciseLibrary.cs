@@ -79,7 +79,7 @@ namespace CTrainingSystem
             base(othAlbum.Name)
         {
             NestedExercises = 
-                Utils.DeepCopySortedSet<AbstractExercise>(othAlbum.NestedExercises);
+                Utils.DeepCopySortedDictionary<string, AbstractExercise>(othAlbum.NestedExercises);
         }
 
         // clone       
@@ -112,45 +112,26 @@ namespace CTrainingSystem
         // insert
         public void AddExercise(AbstractExercise exercise)
         {
-            // check duplicate exercise by name
-            AbstractExercise duplicate = null;
-            // try to find a duplicate in NestedExercises           
-            foreach (AbstractExercise ae in NestedExercises)
+            // check duplicate exercise by name            
+            if (NestedExercises.ContainsKey(exercise.Name))
             {
-                if (ae.GetType() == exercise.GetType()
-                    && ae.Name == exercise.Name)
-                {
-                    duplicate = ae;
-                    break;
-                }
-            }
-            if (null != duplicate)
-            {
-                string ErrorInfo;
-                if (duplicate is ExerciseAlbum ea)
-                {
-                    ErrorInfo = "This album already has an album named " + exercise.Name;
-                }
-                else
-                {
-                    ErrorInfo = "This album already has an exercise named " + exercise.Name;
-                }
+                string ErrorInfo = "This album already has a(n) " + exercise.Name + "!";               
                 throw new System.Exception(ErrorInfo);
             }
 
             // insert to the backing field
             AbstractExercise newExercise = (AbstractExercise)exercise.Clone();            
-            NestedExercises_.Add(newExercise);
+            NestedExercises_.Add(newExercise.Name, newExercise);
         }
 
         // fields
-        private SortedSet<AbstractExercise> NestedExercises_ 
-            = new SortedSet<AbstractExercise>(new ExerciseComparer());
-        public SortedSet<AbstractExercise> NestedExercises
+        private SortedDictionary<string, AbstractExercise> NestedExercises_ 
+            = new SortedDictionary<string, AbstractExercise>();
+        public SortedDictionary<string, AbstractExercise> NestedExercises
         {
             get
             {
-                return Utils.DeepCopySortedSet<AbstractExercise>(NestedExercises_);
+                return Utils.DeepCopySortedDictionary<string, AbstractExercise>(NestedExercises_);
             }
             private set 
             { 

@@ -56,19 +56,19 @@ namespace CTrainingSystem
 
         // return a deep copy of a SortedSet<T> object
         // require T implements ICloneable
-        public static SortedSet<T> DeepCopySortedSet<T>(SortedSet<T> set)
+        public static SortedDictionary<K, T> DeepCopySortedDictionary<K, T>(SortedDictionary<K, T> sd)
             where T : ICloneable
         {
-            if (set == null)
+            if (sd == null)
             { 
                 return null; 
             }
 
-            SortedSet<T> newSet = new SortedSet<T>(set.Comparer);
-            foreach (T element in set)
+            SortedDictionary<K, T> newSet = new SortedDictionary<K, T>(sd.Comparer);
+            foreach (KeyValuePair<K, T> pair in sd)
             {
-                T newElement = (T)element.Clone();
-                newSet.Add(newElement);
+                T cloneT = (T)pair.Value.Clone();
+                newSet.Add(pair.Key, cloneT);
             }
             return newSet;
         }
