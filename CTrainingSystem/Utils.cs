@@ -29,7 +29,7 @@ namespace CTrainingSystem
             List<string> Duplicate = new List<string>();
             foreach (string s in list)
             {                
-                Duplicate.Add(DeepCopyString(s));
+                Duplicate.Add(s);
             }
             return Duplicate;
         }

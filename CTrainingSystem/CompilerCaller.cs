@@ -14,7 +14,7 @@ namespace CTrainingSystem
             set => Compiler = value;
         }        
 
-        // ctor
+        // consturctor
         public CompilerCaller(string ConfigPath)
         {
             // get compiler path from CompilerPath.txt

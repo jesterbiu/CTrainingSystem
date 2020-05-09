@@ -21,6 +21,7 @@ namespace CTrainingSystem
     public abstract class AbstractExercise : ICloneable
     {
         // ctor
+        public AbstractExercise() { }
         public AbstractExercise(string name)
         {
             Name = name;
@@ -36,42 +37,22 @@ namespace CTrainingSystem
         {
             get
             {
-                return Utils.DeepCopyString(Name_);
+                return Name_;
             }
-            private set
+            protected set
             {
                 Name_ = value;
             }
         }
     }
-
-    /* 题库比较器：返回两个AbstractExercise子类对象的顺序
-    // same type:       return Compare(e1.Name, e2.Name)
-    // differen types:  ExerciseAlbum preceeds ExerciseSingle
-    */
-    public class ExerciseComparer : IComparer<AbstractExercise>
-    {
-        public int Compare(AbstractExercise e1, AbstractExercise e2)
-        {
-            if (e1.GetType() == e2.GetType())
-            {
-                return e1.Name.CompareTo(e2.Name);
-            }
-            else
-            {
-                Type e1Type = e1.GetType();
-                Type e2Type = e2.GetType();
-                return e1Type.Name.CompareTo(e2Type.Name);
-            }
-        }
-    }
+       
 
     /*  题库：内含题库和题目 
      *  a collection of ExerciseAlbums and ExerciseSingles
      */
     public class ExerciseAlbum: AbstractExercise 
     {
-        // ctor
+        // constructor
         public ExerciseAlbum(string name):
             base(name)
         { }
@@ -109,11 +90,57 @@ namespace CTrainingSystem
             }
         }
 
+        // get an exercise given a path
+        private static readonly char SplitNote = '/';
+        public AbstractExercise GetExercise(string path)
+        {
+            // validate input
+            if (path == null
+                || path.Length == 0)
+            {
+                return null;
+            }
+            string[] paths = path.Split(SplitNote);
+            Queue<string> directories = new Queue<string>();
+            foreach (string s in paths)
+            {
+                directories.Enqueue(s);
+            }
+            return Get(directories);
+        }
+       
+        private AbstractExercise Get(Queue<string> directories)
+        {
+            string NextDirectoryName = directories.Dequeue();
+            if (NestedExercises_.ContainsKey(NextDirectoryName))
+            {
+                AbstractExercise NextDirectory = NestedExercises_[NextDirectoryName];
+
+                // the final exerise obtained
+                if (directories.Count == 0)
+                {
+                    object TargetExercise = NextDirectory.Clone();
+                    return (AbstractExercise)TargetExercise;
+                }
+                // try to obtain the exercise recursively
+                else
+                {
+                    ExerciseAlbum album = NextDirectory as ExerciseAlbum;                    
+                    if (album != null)
+                    {
+                        return album.Get(directories);
+                    }
+                }
+            }
+
+            return null;
+        }
+
         // insert
         public void AddExercise(AbstractExercise exercise)
         {
             // check duplicate exercise by name            
-            if (NestedExercises.ContainsKey(exercise.Name))
+            if (NestedExercises_.ContainsKey(exercise.Name))
             {
                 string ErrorInfo = "This album already has a(n) " + exercise.Name + "!";               
                 throw new System.Exception(ErrorInfo);
@@ -122,6 +149,12 @@ namespace CTrainingSystem
             // insert to the backing field
             AbstractExercise newExercise = (AbstractExercise)exercise.Clone();            
             NestedExercises_.Add(newExercise.Name, newExercise);
+        }
+
+        // remove
+        public void DeleteExercise(string path)
+        {
+
         }
 
         // fields
@@ -151,10 +184,13 @@ namespace CTrainingSystem
         {
             this.Problem = (ExerciseProblem)problem.Clone();
         }
-        public ExerciseSingle(ExerciseSingle othSingle) :
-            base(othSingle.Name)
+        public ExerciseSingle(ExerciseSingle othSingle)
         {
-            Problem = othSingle.Problem;
+            if (othSingle != this)
+            {
+                Name = othSingle.Name;
+                this.Problem = (ExerciseProblem)othSingle.Problem.Clone();
+            }
         }
 
         // clone

@@ -221,14 +221,14 @@ namespace CTrainingSystem
                 this.TestInputs, this.TestOutputs);
         }       
 
-        // ctor
+        // constructor
         public ExerciseProblem(string pName, string pDescription,
             List<string> pTestInputs, List<string> pTestOutputs)
         {
             try
             {
-                Name = Utils.DeepCopyString(pName);
-                Description = Utils.DeepCopyString(pDescription);
+                Name = pName;
+                Description = pDescription;
 
                 // note: cannot deep copy source objects if they are of reference types
                 TestInputs = Utils.CopyStringList(pTestInputs);//const char* str = "..."; -> string str = "...";
@@ -239,8 +239,6 @@ namespace CTrainingSystem
                 System.Console.WriteLine(expt.Message);
             }
         }
-
-
 
         // fields
         /*
@@ -260,7 +258,7 @@ namespace CTrainingSystem
         {
             get 
             {
-                return Utils.DeepCopyString(Name_); 
+                return Name_; 
             }
             private set 
             { 
@@ -272,7 +270,7 @@ namespace CTrainingSystem
         {
             get
             {
-                return Utils.DeepCopyString(Description_);
+                return Description_;
             }
             private set
             {

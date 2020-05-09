@@ -46,9 +46,9 @@ namespace ExerciseLibraryUnitTest
 
                 if (E is ExerciseAlbum A)
                 {
-                    foreach (AbstractExercise abe in A.NestedExercises)
+                    foreach (KeyValuePair<string, AbstractExercise> pair in A.NestedExercises)
                     {
-                        q.Enqueue(abe);
+                        q.Enqueue(pair.Value);
                     }
                 }       
             }
@@ -114,7 +114,7 @@ namespace ExerciseLibraryUnitTest
             }
 
             /* 
-             *  Act
+             *  Act 1
              */
             ((ExerciseAlbum)albums[3]).AddExercise(singles[3]);
 
@@ -132,7 +132,7 @@ namespace ExerciseLibraryUnitTest
             List<string> printlist = BFSPrintAlbums((ExerciseAlbum)albums[0]);
 
             /*
-             *  Assert
+             *  Assert 1
              */
             List<string> expected = new List<string>();
             //expected.Add("Problem-");
@@ -153,7 +153,17 @@ namespace ExerciseLibraryUnitTest
 
             Assert.IsTrue(IsSameSequence(expected, printlist));
 
+            /*
+             *  Act 2
+             */
+            AbstractExercise getexercise =
+               ((ExerciseAlbum)albums[0]).GetExercise("Album-2/Album-4/Problem-4");
 
+            /*
+             *  Assert 2
+             */
+            Assert.IsTrue(getexercise != null
+                && getexercise.Name == "Problem-4");
 
 
         }
