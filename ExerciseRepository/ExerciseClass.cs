@@ -167,8 +167,8 @@ namespace CTrainingSystem
             }
 
             // insert to the backing field
-            AbstractExercise newExercise = (AbstractExercise)exercise.Clone();
-            NestedExercises_.Add(newExercise.Name, newExercise);
+            //AbstractExercise newExercise = (AbstractExercise)exercise.Clone();
+            NestedExercises_.Add(exercise.Name, exercise);
 
             return true;
         }

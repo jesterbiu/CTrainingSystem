@@ -205,6 +205,12 @@ namespace ExerciseLibraryUnitTest
             Assert.IsTrue(getexercise != null
                 && getexercise.Name == "Problem-4");
 
+            // act
+            ExerciseAlbum album3 = (ExerciseAlbum)albums[2];
+            album3.DeleteExercise("Album-5");
+            expected.Remove("Album-5");
+            printlist = BFSPrintAlbums((ExerciseAlbum)albums[0]);
+            Assert.IsTrue(IsSameSequence(expected, printlist));
 
         }
     }
