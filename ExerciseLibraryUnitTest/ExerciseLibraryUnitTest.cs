@@ -34,6 +34,47 @@ namespace ExerciseLibraryUnitTest
             }
         }
 
+        AbstractExercise GetExerciseGivenPath(string path, ExerciseAlbum album)
+        {
+            if (null == path)
+            {
+                return null;
+            }
+
+            Queue<string> dirs = new Queue<string>();
+            string[] path_split = path.Split('/');
+            foreach (string p in path_split)
+            {
+                dirs.Enqueue(p);
+            }
+            AbstractExercise iAe = album;
+            while (dirs.Count > 0)
+            {
+                string name = dirs.Dequeue();
+                if (iAe is ExerciseAlbum a)
+                { 
+                    iAe = a.GetExercise(name); 
+                }
+                
+                // check result
+                if (iAe == null)
+                {
+                    return null;
+                }
+                else if (iAe is ExerciseSingle single
+                    && dirs.Count > 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return iAe;
+        }
+
         List<string> BFSPrintAlbums(ExerciseAlbum ea)
         {
             List<string> prints = new List<string>();
@@ -156,8 +197,7 @@ namespace ExerciseLibraryUnitTest
             /*
              *  Act 2
              */
-            AbstractExercise getexercise =
-               ((ExerciseAlbum)albums[0]).GetExercise("Album-2/Album-4/Problem-4");
+            AbstractExercise getexercise = GetExerciseGivenPath("Album-2/Album-4/Problem-4", (ExerciseAlbum)albums[0]);
 
             /*
              *  Assert 2
