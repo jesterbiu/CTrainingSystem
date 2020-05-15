@@ -5,10 +5,9 @@ using System.Collections.Generic;
 
 namespace ExerciseLibraryUnitTest
 {
-    [TestClass]
-    public class ExerciseLibraryUnitTest
+    public class ExerciseLibraryUnitTestHelper
     {
-        AbstractExercise CreateExerciseAlbum(string name)
+        public static AbstractExercise CreateExerciseAlbum(string name)
         {
             if (name == null)
             {
@@ -16,12 +15,12 @@ namespace ExerciseLibraryUnitTest
             }
             else
             {
-                ExerciseAlbum album = new ExerciseAlbum(name);                
+                ExerciseAlbum album = new ExerciseAlbum(name);
                 return album;
             }
         }
 
-        AbstractExercise CreateExerciseSingle(string name)
+        public static AbstractExercise CreateExerciseSingle(string name)
         {
             if (name == null)
             {
@@ -34,7 +33,7 @@ namespace ExerciseLibraryUnitTest
             }
         }
 
-        AbstractExercise GetExerciseGivenPath(string path, ExerciseAlbum album)
+        public static AbstractExercise GetExerciseGivenPath(string path, ExerciseAlbum album)
         {
             if (null == path)
             {
@@ -52,10 +51,10 @@ namespace ExerciseLibraryUnitTest
             {
                 string name = dirs.Dequeue();
                 if (iAe is ExerciseAlbum a)
-                { 
-                    iAe = a.GetExercise(name); 
+                {
+                    iAe = a.GetExercise(name);
                 }
-                
+
                 // check result
                 if (iAe == null)
                 {
@@ -75,7 +74,7 @@ namespace ExerciseLibraryUnitTest
             return iAe;
         }
 
-        List<string> BFSPrintAlbums(ExerciseAlbum ea)
+        public static List<string> BFSPrintAlbums(ExerciseAlbum ea)
         {
             List<string> prints = new List<string>();
             Queue<AbstractExercise> q = new Queue<AbstractExercise>();
@@ -91,12 +90,12 @@ namespace ExerciseLibraryUnitTest
                     {
                         q.Enqueue(pair.Value);
                     }
-                }       
+                }
             }
             return prints;
         }
 
-        bool IsSameSequence(List<string> la, List<string> lb)           
+        public static bool IsSameSequence(List<string> la, List<string> lb)
         {
             if (la == null
                 || lb == null
@@ -114,26 +113,25 @@ namespace ExerciseLibraryUnitTest
             }
             return true;
         }
+    }
 
-        [TestMethod]
-        public void Test1()
+    [TestClass]
+    public class ExerciseLibraryUnitTest
+    {
+        /// <summary>
+        /// Generate a album has this structure:
+        ///    Album1 - Album2 - Album4 - Problem4
+        ///                    - Problem3     
+        ///           - Album3 - Album5
+        ///                    - Problem5
+        ///           - Problem1
+        ///           - Problem2           
+        /// </summary>
+        /// <param name="albums"></param>
+        /// <param name="expected"></param>
+        public void GenerateAlbums(out List<AbstractExercise> albums, out List<string> expected)
         {
-            /* 
-             *  Arrange:
-             *  Album1-
-             *          Album2-                               
-             *                  Album4-
-             *                          Problem4
-             *                  Problem3
-             *          Album3-
-             *                  Album5 - (nothing)
-             *                  Problem5
-             *          Problem1
-             *          Problem2
-             *  
-             *  
-             *  
-             */
+           
 
             // create singles
             List<AbstractExercise> singles = new List<AbstractExercise>();
@@ -141,16 +139,16 @@ namespace ExerciseLibraryUnitTest
             string num = "12345";
             for (int i = 0; i < 5; i++)
             {
-                AbstractExercise single = CreateExerciseSingle(singleHeader + num[i]);
+                AbstractExercise single = ExerciseLibraryUnitTestHelper.CreateExerciseSingle(singleHeader + num[i]);
                 singles.Add(single);
             }
-            
+
             // create albums
-            List<AbstractExercise> albums = new List<AbstractExercise>();
-            string albumHeader = "Album-";            
+            albums = new List<AbstractExercise>();
+            string albumHeader = "Album-";
             for (int i = 0; i < 5; i++)
-            {                
-                AbstractExercise album = CreateExerciseAlbum(albumHeader + num[i]);
+            {
+                AbstractExercise album = ExerciseLibraryUnitTestHelper.CreateExerciseAlbum(albumHeader + num[i]);
                 albums.Add(album);
             }
 
@@ -165,53 +163,102 @@ namespace ExerciseLibraryUnitTest
             ((ExerciseAlbum)albums[2]).AddExercise(albums[4]);
             ((ExerciseAlbum)albums[2]).AddExercise(singles[4]);
 
-            ((ExerciseAlbum)albums[0]).AddExercise(albums[2-1]);
-            ((ExerciseAlbum)albums[0]).AddExercise(albums[3-1]);
+            ((ExerciseAlbum)albums[0]).AddExercise(albums[2 - 1]);
+            ((ExerciseAlbum)albums[0]).AddExercise(albums[3 - 1]);
             ((ExerciseAlbum)albums[0]).AddExercise(singles[1 - 1]);
-            ((ExerciseAlbum)albums[0]).AddExercise(singles[2-1]);
+            ((ExerciseAlbum)albums[0]).AddExercise(singles[2 - 1]);
 
-            List<string> printlist = BFSPrintAlbums((ExerciseAlbum)albums[0]);
-
-            /*
-             *  Assert 1
-             */
-            List<string> expected = new List<string>();
-            //expected.Add("Problem-");
-            //expected.Add("Album-");
+            // generate print list
+            expected = new List<string>();
             expected.Add("Album-1");
             expected.Add("Album-2");
             expected.Add("Album-3");
             expected.Add("Problem-1");
             expected.Add("Problem-2");
-
             expected.Add("Album-4");
             expected.Add("Problem-3");
-
             expected.Add("Album-5");
             expected.Add("Problem-5");
-
             expected.Add("Problem-4");
+        }
 
-            Assert.IsTrue(IsSameSequence(expected, printlist));
+        // test basic ExerciseAlbum and ExerciseSingle functionalities
+        // NestedExercises & ExerciseProblem
+        [TestMethod]
+        public void TestExerciseDataMembers()
+        {
+            // arrange 1
+            List<AbstractExercise> albums = null;
+            List<string> expected = null;
+            GenerateAlbums(out albums, out expected);
 
-            /*
-             *  Act 2
-             */
-            AbstractExercise getexercise = GetExerciseGivenPath("Album-2/Album-4/Problem-4", (ExerciseAlbum)albums[0]);
+            // act 1
+            List<string> printlist = ExerciseLibraryUnitTestHelper.BFSPrintAlbums((ExerciseAlbum)albums[0]);
 
-            /*
-             *  Assert 2
-             */
+            // assert 1
+            bool isSameSeq = ExerciseLibraryUnitTestHelper.IsSameSequence(expected, printlist);
+            Assert.IsTrue(isSameSeq);
+        }
+
+        // Test GetExercise()
+        [TestMethod]
+        public void TestGetExercise()
+        {
+            // arrange 2
+            List<AbstractExercise> albums = null;
+            List<string> expected = null;
+            GenerateAlbums(out albums, out expected);
+
+            // act 2
+            AbstractExercise getexercise
+                = ExerciseLibraryUnitTestHelper.GetExerciseGivenPath("Album-2/Album-4/Problem-4", (ExerciseAlbum)albums[0]);
+
+            // assert 2
             Assert.IsTrue(getexercise != null
                 && getexercise.Name == "Problem-4");
+        }
 
-            // act
+        // Test DeleteExercise()
+        [TestMethod]
+        public void TestDeleteExercise()
+        {
+            // arrange
+            List<AbstractExercise> albums = null;
+            List<string> expected = null;
+            GenerateAlbums(out albums, out expected);
+
+            // act            
             ExerciseAlbum album3 = (ExerciseAlbum)albums[2];
             album3.DeleteExercise("Album-5");
             expected.Remove("Album-5");
-            printlist = BFSPrintAlbums((ExerciseAlbum)albums[0]);
-            Assert.IsTrue(IsSameSequence(expected, printlist));
+                       
+            // assert
+            List<string> printlist 
+                = ExerciseLibraryUnitTestHelper.BFSPrintAlbums((ExerciseAlbum)albums[0]);
+            bool isSameSeq = ExerciseLibraryUnitTestHelper.IsSameSequence(expected, printlist);
+            Assert.IsTrue(isSameSeq);
+        }
 
+        // Test serialization
+        [TestMethod]
+        public void TestSerialization()
+        {
+            // arrange
+            List<AbstractExercise> albums = null;
+            List<string> expectedPrint = null;
+            GenerateAlbums(out albums, out expectedPrint);
+            ExerciseAlbum originAlbum = (ExerciseAlbum)albums[0];
+
+            // act
+            string fileName = "ExerciseLibrarySerializationTest.xml";
+            AbstractExercise.WriteExerciseToXml(originAlbum, fileName);
+            ExerciseAlbum deserializedAlbum 
+                = (ExerciseAlbum)AbstractExercise.ReadExerciseFromXml(fileName);
+
+            // assert
+            List<string> actualPrint = ExerciseLibraryUnitTestHelper.BFSPrintAlbums(deserializedAlbum);
+            bool isSameSeq = ExerciseLibraryUnitTestHelper.IsSameSequence(expectedPrint, actualPrint);
+            Assert.IsTrue(isSameSeq);
         }
     }
 }

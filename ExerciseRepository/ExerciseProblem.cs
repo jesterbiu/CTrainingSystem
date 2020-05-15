@@ -3,6 +3,9 @@ namespace CTrainingSystem
 {
     using System;
     using System.Collections.Generic;
+    using System.Xml;
+    using System.IO;
+    using System.Runtime.Serialization;    
     using System.Security.Cryptography;
     using System.Xml.Schema;
 
@@ -152,14 +155,18 @@ namespace CTrainingSystem
 
     }
 
+    [DataContract]
     public class ExerciseProblem : ICloneable
     {
+        #region Identifiers
         static readonly string NameIdentifier = "name:";
         static readonly string DescriptionIdentifier = "description:";
         static readonly string CountsIdentifier = "counts:";
         static readonly string InputIdentifier = "input:";
         static readonly string OutputIdentifier = "output:";
+        #endregion
 
+        #region Constructors: static factory and parametered constructor
         // factory construct method
         public static ExerciseProblem GetExerciseProblem(string FilePath)
         {
@@ -213,14 +220,6 @@ namespace CTrainingSystem
 
             return problem;
         }
-
-        // clone
-        public object Clone()
-        {
-            return new ExerciseProblem(this.Name, this.Description, 
-                this.TestInputs, this.TestOutputs);
-        }       
-
         // constructor
         public ExerciseProblem(string pName, string pDescription,
             List<string> pTestInputs, List<string> pTestOutputs)
@@ -232,28 +231,36 @@ namespace CTrainingSystem
 
                 // note: cannot deep copy source objects if they are of reference types
                 TestInputs = Utils.CopyStringList(pTestInputs);//const char* str = "..."; -> string str = "...";
-                TestOutputs = Utils.CopyStringList(pTestOutputs);                
+                TestOutputs = Utils.CopyStringList(pTestOutputs);
             }
             catch (System.Exception expt)
             {
                 System.Console.WriteLine(expt.Message);
             }
         }
+        #endregion
 
-        // fields
-        /*
-        private readonly string Name_;
-        private readonly string Description_;
-        private readonly List<string> TestInputs_;
-        private readonly List<string> TestOutputs_;
-        */
+        #region Member function
+        // clone
+        public object Clone()
+        {
+            return new ExerciseProblem(this.Name, this.Description, 
+                this.TestInputs, this.TestOutputs);
+        }
+        #endregion
 
-        // properties and backing fields
+        #region Fields and properties
+        // backing fields
+        [DataMember]
         private string Name_ = "";
+        [DataMember]
         private string Description_ = "";
+        [DataMember]
         private List<string> TestInputs_ = new List<string>();
+        [DataMember]
         private List<string> TestOutputs_ = new List<string>();
 
+        // properties
         public string Name
         {
             get 
@@ -301,7 +308,7 @@ namespace CTrainingSystem
                 TestOutputs_ = value;
             }
         }
-
+        #endregion
     }
-    
+
 }

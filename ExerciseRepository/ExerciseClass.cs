@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -7,13 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CTrainingSystem
-{    
-    /* 
-     * 题库和题目类的抽象基类
-     * abstract base class for ExerciseAlbum and ExerciseSingle
-     */
+{
+
+    /// <summary>
+    /// 题库和题目类的抽象基类
+    /// * abstract base class for ExerciseAlbum and ExerciseSingle
+    /// </summary>
+    #region AbstractExercise
+
+    [DataContract]
+    [KnownType(typeof(ExerciseAlbum))]
+    [KnownType(typeof(ExerciseSingle))]
     public abstract class AbstractExercise : ICloneable
     {
+        #region Constructors
+
         // constructor
         public AbstractExercise() { IsValid = true; }
         public AbstractExercise(string name)
@@ -22,26 +33,72 @@ namespace CTrainingSystem
             Name = name;
         }
 
-        // clone
+        #endregion
+
+        #region Overridden object methods 
+
+        // Clone interface (Overriden object.Clone())
+        // implementation varies between types
         public virtual object Clone()
         {
             TestValid();
             return null; 
         }
 
+        // Note: Testing the Equality of 2 instances should have the same result using either Equals() or GetHashCode()
+
+        // GetHashCode (overriden object.GetHashCode())
+        // Every instance (which is of types inherited AbstractExercise)
+        // inside an ExerciseAlbum must have a UNIQUE name.
+        // Consider two strings equal if their GetHashCode() are equal.
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }        
+
+        // Equals (overridden object.Equals())
+        // test equality using overload version Equals()
+        public override bool Equals(object obj)
+        {
+            TestValid();
+            return Equals(obj as AbstractExercise);
+        }
+
+        // Equals (overload object.Equals())
+        // use the overriden GetHashCode() to test equality.        
+        public bool Equals(AbstractExercise oth)
+        {
+            TestValid();
+            if (null == oth)
+            {
+                return false;
+            }
+            else
+            {
+                return this.GetHashCode() == oth.GetHashCode();
+            }
+        }
+
+        #endregion
+
+        #region Member methods
+
         // set IsValid as false
-        // invalidate this AbstractExercise
+        // invalidate the actual object whose type inherites AbstractExercise
         protected void InvalidateThis()
         {
             IsValid = false;
         }
 
-        // delete this AbstractExercise
+        // to call the correct version of DeleteThisExercise at run-time
+        // based on the actual type of the object ae
         protected static void DeleteThis(AbstractExercise ae)
         {
             ae.DeleteThisExercise();
         }
 
+        // delete interface
+        // implementation varies between types
         protected virtual void DeleteThisExercise()
         {
             // do nothing
@@ -57,9 +114,76 @@ namespace CTrainingSystem
             }
         }
 
-        // fields
+        // serialize the object exercise into XML file by fileName
+        public static void WriteExerciseToXml(AbstractExercise exercise, string fileName)
+        {
+            if (exercise == null
+                || fileName == null)
+            {
+                throw new System.ArgumentNullException();
+            }
+
+            // open the XML file in FileStream
+            // overwrite the file if it exists, otherwise create a new one
+            FileStream xmlFile = new FileStream(fileName, FileMode.Create);
+
+            // create a text XML writer
+            // associated it with the opened XML file stream above
+            XmlDictionaryWriter xmlWriter = XmlDictionaryWriter.CreateTextWriter(xmlFile);
+
+            // create a serializer for the AbstractExercise type
+            DataContractSerializer serializer =
+                new DataContractSerializer(typeof(AbstractExercise));
+
+            // serialize the exercise object
+            serializer.WriteObject(xmlWriter, exercise);
+
+            // close streams
+            xmlWriter.Close();
+            xmlFile.Close();
+        }
+
+        // deserialize an object from the given XML file
+        public static AbstractExercise ReadExerciseFromXml(string fileName)
+        {
+            if (fileName == null)
+            {
+                throw new System.ArgumentNullException();
+            }
+
+            // open XML file in FileStream
+            FileStream xmlFile = new FileStream(fileName, FileMode.Open);
+
+            // crete a text XML reader
+            // associated it with the opened XML file above
+            XmlDictionaryReader reader =
+                XmlDictionaryReader.CreateTextReader(xmlFile, new XmlDictionaryReaderQuotas());
+
+            // create a serializer for the AbstratExercise type
+            DataContractSerializer serizalizer = new DataContractSerializer(typeof(AbstractExercise));
+
+            // Deserialize the object
+            AbstractExercise exercise = (AbstractExercise)serizalizer.ReadObject(reader, true);
+
+            // close streams
+            reader.Close();
+            xmlFile.Close();
+
+            return exercise;
+        }
+
+
+        #endregion
+
+        #region Fields & properties
+
+        // backing fields for property
+        [DataMember]
         private string Name_;
+        [DataMember]
         private bool IsValid_;
+        
+        // properties
         public string Name
         {
             get
@@ -83,18 +207,32 @@ namespace CTrainingSystem
                 IsValid_ = value;
             }
         }
+        
+        #endregion
     }
 
+    #endregion
 
-    /*  题库：内含题库和题目 
-     *  a collection of ExerciseAlbums and ExerciseSingles
-     */
+    /// <summary>
+    /// 题库：内含题库和题目 
+    /// a collection of ExerciseAlbums and ExerciseSingles
+    /// </summary>
+    #region ExerciseAlbum
+    
+    [DataContract]
     public class ExerciseAlbum : AbstractExercise
     {
-        // constructor
+        #region Constructors        
+        
+        // no default constructor thus ExerciseAlbum.Name != String.Empty
+
+        // constructor: construct a new empty ExerciseAlbum instance 
+        // only given its name
         public ExerciseAlbum(string name) :
             base(name)
         { }
+
+        // constructor: copy constructor
         public ExerciseAlbum(ExerciseAlbum othAlbum) :
             base(othAlbum.Name)
         {
@@ -102,37 +240,18 @@ namespace CTrainingSystem
                 Utils.DeepCopySortedDictionary<string, AbstractExercise>(othAlbum.NestedExercises);
         }
 
-        // clone       
+        #endregion
+
+        #region Overriden object method
+        // clone this ExerciseAlbum object
         public override object Clone()
         {
             TestValid();
             return new ExerciseAlbum(this);
         }
+        #endregion
 
-        // equals and gethashcode
-        public override int GetHashCode()
-        {
-            TestValid();
-            return Name.GetHashCode();
-        }
-        public override bool Equals(object obj)
-        {
-            TestValid();
-            return Equals(obj as ExerciseAlbum);
-        }
-        public bool Equals(ExerciseAlbum oth)
-        {
-            TestValid();
-            if (null == oth)
-            {
-                return false;
-            }
-            else
-            {
-                return this.GetHashCode() == oth.GetHashCode();
-            }
-        }
-
+        #region Member methods
         // get an exercise in this album
         public AbstractExercise GetExercise(string name)
         {
@@ -199,7 +318,11 @@ namespace CTrainingSystem
             InvalidateThis();
         }
 
+        #endregion
+
+        #region Field & property
         // fields
+        [DataMember]
         protected SortedDictionary<string, AbstractExercise> NestedExercises_
             = new SortedDictionary<string, AbstractExercise>();
         public SortedDictionary<string, AbstractExercise> NestedExercises
@@ -214,19 +337,31 @@ namespace CTrainingSystem
                 NestedExercises_ = value;
             }
         }
+        #endregion
     }
+    
+    #endregion
 
-    /*  题目：内含一个题目，即ExerciseProblem
-     *  holds a single ExerciseProblem
-     */
+    /// <summary>
+    /// 题目：内含一个题目，即ExerciseProblem
+    /// holds a single ExerciseProblem
+    /// </summary>  
+    #region ExerciseSingle
+    
+    [DataContract]
     public class ExerciseSingle : AbstractExercise
     {
-        // constructor
+        #region Constructor
+        // constructors
+
+        // constructor: construct with a ExerciseProblem
         public ExerciseSingle(ExerciseProblem problem) :
             base(problem.Name)
         {
             this.Problem = (ExerciseProblem)problem.Clone();
         }
+           
+        // copy constuctor
         public ExerciseSingle(ExerciseSingle othSingle)
         {
             if (othSingle != this)
@@ -235,47 +370,28 @@ namespace CTrainingSystem
                 this.Problem = (ExerciseProblem)othSingle.Problem.Clone();
             }
         }
+        #endregion
 
+        #region Overriden object method
         // clone
         public override object Clone()
         {
             TestValid();
             return new ExerciseSingle(this);
         }
+        #endregion
 
-        // equals and gethashcode
-        public override int GetHashCode()
-        {
-            TestValid();
-            return Problem.Name.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            TestValid();
-            return Equals(obj as ExerciseSingle);
-        }
-
-        public bool Equals(ExerciseSingle oth)
-        {
-            TestValid();
-            if (null == oth)
-            {
-                return false;
-            }
-            else
-            {
-                return this.GetHashCode() == oth.GetHashCode();
-            }
-        }
-
+        #region Member method
         // delete
         protected override void DeleteThisExercise()
         {
             InvalidateThis();
         }
+        #endregion
 
+        #region Field & property
         // fields
+        [DataMember]
         ExerciseProblem Problem_;
         public ExerciseProblem Problem
         {
@@ -289,7 +405,8 @@ namespace CTrainingSystem
                 Problem_ = value;
             }
         }
+        #endregion
     }
-
+    #endregion
 
 }
