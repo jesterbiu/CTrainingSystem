@@ -45,19 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExerciseClass.cs" />
-    <Compile Include="ExerciseLibrary.cs" />
     <Compile Include="ExerciseProblem.cs" />
     <Compile Include="ExerciseProblemManualTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CTrainingSystem\CTrainingSystem.csproj">
-      <Project>{ff362d94-2b86-49b1-a128-c02e8420dfa9}</Project>
-      <Name>CTrainingSystem</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

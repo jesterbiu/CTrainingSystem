@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace CTrainingSystem
 {
@@ -20,13 +21,19 @@ namespace CTrainingSystem
         // run an external exe designated by filename 
         // which takes args as arguments
         // return the exe's output
-        public static string[] Run(string filename, string StartupArgs, string[] RuntimeArgs)
+        public static string[] Run(string filename, string StartupArgs, string[] RuntimeInputs)
         {
+            if (filename == null
+                || filename == string.Empty)
+            {
+                throw new System.ArgumentException("invalid file name!");
+            }
             // create an external process
+            // exception handle: empty filename, invalid filename?
             Process ExternExe = CreateNewProcess(filename, StartupArgs);
 
             // run the process using args
-            RunProcess(ExternExe, RuntimeArgs);
+            RunProcess(ExternExe, RuntimeInputs);
 
             // get output
             string[] outputs = GetOutput(ExternExe);
@@ -42,6 +49,18 @@ namespace CTrainingSystem
 
         private static Process CreateNewProcess(string filename, string StartupArgs = null)
         {
+            if (filename == null)
+            {
+                throw new System.ArgumentNullException();
+            }
+            else
+            {
+                if (!System.IO.File.Exists(filename))
+                {
+                    throw new System.Exception("No such file exists!");
+                }
+            }
+
             Process NewProcess = new Process
             {
                 StartInfo = StartupArgs == null ?

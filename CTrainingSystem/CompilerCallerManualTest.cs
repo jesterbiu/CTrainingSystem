@@ -31,7 +31,8 @@ namespace SystemTest
                 + @"..\..\..\ProgramTestInput\ExerciseCommits\mul.c";
 
             CompilerCaller cc = new CompilerCaller(ConfigFilePath);
-            cc.CallCompiler("mul", SourceFiles);
+            string[] errors;
+            cc.Compile("mul", SourceFiles, out errors);
 
             // act
             string[] Output = 

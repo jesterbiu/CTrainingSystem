@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF362D94-2B86-49B1-A128-C02E8420DFA9}</ProjectGuid>
+    <ProjectGuid>{B477093D-8E79-411C-8343-4DE14FA51C0B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CTrainingSystem</RootNamespace>
-    <AssemblyName>CTrainingSystem</AssemblyName>
+    <RootNamespace>ConsoleInterface</RootNamespace>
+    <AssemblyName>ConsoleInterface</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,24 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProgramTest.cs" />
-    <Compile Include="CompilerCaller.cs" />
-    <Compile Include="CompilerCallerManualTest.cs" />
-    <Compile Include="CTrainingSystem.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CTrainingSystem\CTrainingSystem.csproj">
+      <Project>{ff362d94-2b86-49b1-a128-c02e8420dfa9}</Project>
+      <Name>CTrainingSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExerciseRepository\ExerciseLibrary.csproj">
       <Project>{59a24bfb-927d-43d9-b8be-1c0529996c0d}</Project>
       <Name>ExerciseLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternExeRunner\ExternExeRunner.csproj">
-      <Project>{dc6cbd55-b412-456e-b846-61868139db28}</Project>
-      <Name>ExternExeRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

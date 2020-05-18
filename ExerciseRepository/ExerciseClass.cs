@@ -272,7 +272,7 @@ namespace CTrainingSystem
             TestValid();
 
             // validate input
-            if (exercise == null)
+            if (exercise == null || exercise.Name == string.Empty)
             {
                 return false;
             }
