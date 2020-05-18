@@ -48,7 +48,6 @@
     <Compile Include="CompilerCallerManualTest.cs" />
     <Compile Include="CTrainingSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -61,6 +60,10 @@
     <ProjectReference Include="..\ExternExeRunner\ExternExeRunner.csproj">
       <Project>{dc6cbd55-b412-456e-b846-61868139db28}</Project>
       <Name>ExternExeRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{3b95394f-3dc5-4c20-9058-2a1749bd8f54}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleInterface", "ConsoleInterface\ConsoleInterface.csproj", "{B477093D-8E79-411C-8343-4DE14FA51C0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{3B95394F-3DC5-4C20-9058-2A1749BD8F54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{B477093D-8E79-411C-8343-4DE14FA51C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B477093D-8E79-411C-8343-4DE14FA51C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B477093D-8E79-411C-8343-4DE14FA51C0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B95394F-3DC5-4C20-9058-2A1749BD8F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B95394F-3DC5-4C20-9058-2A1749BD8F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B95394F-3DC5-4C20-9058-2A1749BD8F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B95394F-3DC5-4C20-9058-2A1749BD8F54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

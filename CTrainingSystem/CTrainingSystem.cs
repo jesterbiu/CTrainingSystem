@@ -12,10 +12,10 @@ namespace CTrainingSystem
     {
         #region Load, get, add, delete exercises
         // load root album
-        private static string rootAlbum = "RootAlbum.xml";
-        public static ExerciseAlbum LoadRootExerciseAlbum()
+        //private static string rootAlbum = "RootAlbum.xml";
+        public static ExerciseAlbum LoadRootExerciseAlbum(string rootAlbumPath)
         {
-            return (ExerciseAlbum)AbstractExercise.ReadExerciseFromXml(rootAlbum);
+            return (ExerciseAlbum)AbstractExercise.ReadExerciseFromXml(rootAlbumPath);
         }
         
         // get and return the exercise named exerciseName
@@ -42,7 +42,14 @@ namespace CTrainingSystem
             return exercise;
         }
 
+        // get nested exercise
+        public static SortedDictionary<string, AbstractExercise> GetNestedExercise(ExerciseAlbum workDirectory)
+        {
+            return workDirectory.NestedExercises;
+        }
+
         // add exercise
+
 
         // delete exercise
 
@@ -76,18 +83,15 @@ namespace CTrainingSystem
                 return false;
             }
 
-            // run the generated file with exercise test inputs
-            string programPath = outputProgramsPath + exercise.Name + dotExe;
-            string[] runtimeArgs = exercise.Problem.TestInputs.ToArray();
-            string[] actualOutputs = ExternExeRunner.Run(programPath, null, runtimeArgs);
+            // run the generated file and test it
+            var testResult = RunAndTest(exercise);
 
-            // check outputs
-            string[] expectedOutputs = exercise.Problem.TestOutputs.ToArray();
-
-
-            return true;
+            return testResult.Item1;            
         }
 
+        // compile the source files using gcc that the user provided
+        // output .exe file to designated path
+        // return error
         private static bool Compile(string exerciseName, string sourceFiles, out string[] errors)
         {
             // compile
@@ -97,9 +101,29 @@ namespace CTrainingSystem
             return compileSuccess;
         }
 
+        // run the program given exercise's test inputs
+        // and return the result that consists of 
+        // Item1(pass or not) and Item2 (program's output)
+        private static Tuple<bool, string[]> RunAndTest(ExerciseSingle exercise)
+        {
+            // run the generated file with exercise test inputs
+            string programPath = outputProgramsPath + exercise.Name + dotExe;
+            string[] runtimeArgs = exercise.Problem.TestInputs.ToArray();
+            string[] actualOutputs = ExternExeRunner.Run(programPath, null, runtimeArgs);
+
+            // check outputs by asserting 
+            // that if the exepectedOutputs is the same as actualOutputs
+            string[] expectedOutputs = exercise.Problem.TestOutputs.ToArray();
+            if (!Utils.IsSameStringArray(actualOutputs, expectedOutputs))
+            {
+                return new Tuple<bool, string[]>(false, expectedOutputs);
+            }
+            else
+            { 
+                return new Tuple<bool, string[]>(true, expectedOutputs); 
+            }
+        }
         #endregion
-
-
 
     }
 
